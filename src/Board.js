@@ -171,6 +171,7 @@
       let i = 0;
       let rows = this.rows();
       let row = rows[i];
+      let count = 0;
 
       let iterator = function(row, col) {
 
@@ -178,19 +179,22 @@
           return false;
         }
 
-        if (col < row.length) { // if col > rows.length, break out of recursion
+        if (col < row.length) { // bc if greater, it makes no sense
           if (row[col] > 0) { // individual chessboard square
-            console.log('rows', rows, 'row', row, 'i', i, 'col', col, 'input', majorDiagonalColumnIndexAtFirstRow);
-            return true; // conflict!!!
+            count++;
+            if (count > 1) { // conflict!!!
+              return true;
+            // } else if ((col === row.length - 1) && (count >= 1)) {
+            //   return true;
+            }
           }
-
         } else { // col > row.length
           return false;
         }
 
         col++; // next column
-        i++; // next row
-        row = rows[i];
+        i++;
+        row = rows[i]; // next row
         return iterator(row, col);
       };
 
@@ -200,13 +204,13 @@
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       let n = -this.get('n'); // get negative n (length of array)
-      let startIndex = n + 1; // same as length - 1, but negative
-      let conflict = false; // assume no conflict
+      let startIndex = n + 2; // opposite of length, but plus 1 to be opposite of last index, but plus 1 again (plus 2 total) bc we cannot have conflict in bottom left corner
+      let conflict = false; // assume no conflict, prove otherwise
 
       while (startIndex < Math.abs(n)) { // while less than length of array
         conflict = this.hasMajorDiagonalConflictAt(startIndex);
         if (conflict) {
-          return conflict;
+          return true;
         }
         startIndex++;
       }
@@ -220,12 +224,53 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      let col = minorDiagonalColumnIndexAtFirstRow;
+      let i = 0;
+      let rows = this.rows();
+      let row = rows[i];
+      let count = 0;
+
+      let iterator = function(row, col) {
+
+        if (i === rows.length) { // if all rows have been iterated
+          return false;
+        }
+
+        if (col >= 0) { // bc if less than 0 index (first col), makes no sense
+          if (row[col] > 0) { // individual chessboard square
+            count++;
+            if (count > 1) { // conflict!!!
+              return true;
+            }
+          }
+        } else { // col < 0
+          return false;
+        }
+
+        col--; // previous column
+        i++;
+        row = rows[i]; // next row
+        return iterator(row, col);
+      };
+
+      return iterator(row, col);
+
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      let n = this.get('n'); // get n (length of array)
+      let startIndex = 1; // top left corner + 1, bc top left corner cannot have minor conflict
+      let conflict = false; // assume no conflict, prove otherwise
+
+      while (startIndex < ((n - 1 ) * 2)) { // while less than twice the array.length, but exclude bottom right corner
+        conflict = this.hasMinorDiagonalConflictAt(startIndex);
+        if (conflict) {
+          return true;
+        }
+        startIndex++;
+      }
+      return conflict;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
