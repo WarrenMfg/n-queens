@@ -62,7 +62,7 @@
     },
 
 
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -167,43 +167,50 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      let col = majorDiagonalColumnIndexAtFirstRow; // could be negative???
+      let col = majorDiagonalColumnIndexAtFirstRow;
       let i = 0;
       let rows = this.rows();
       let row = rows[i];
 
       let iterator = function(row, col) {
 
-        if (row[col] === undefined && col < rows.length) { // edge case for negative numbers
-          // console.log('undefined edge case')
-          col++;
-          i++;
-          iterator(row, col);
+        if (i === rows.length) { // if all rows have been iterated
+          return false;
         }
 
-        if (col < rows.length) { // if col > rows.length, break out of recursion
+        if (col < row.length) { // if col > rows.length, break out of recursion
           if (row[col] > 0) { // individual chessboard square
+            console.log('rows', rows, 'row', row, 'i', i, 'col', col, 'input', majorDiagonalColumnIndexAtFirstRow);
             return true; // conflict!!!
           }
 
-        } else {
+        } else { // col > row.length
           return false;
         }
 
         col++; // next column
         i++; // next row
-        iterator(row, col);
+        row = rows[i];
+        return iterator(row, col);
       };
 
-      iterator(row, col);
-
-      // return false; // fixme
+      return iterator(row, col);
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      console.log(this);
-      return false; // fixme
+      let n = -this.get('n'); // get negative n (length of array)
+      let startIndex = n + 1; // same as length - 1, but negative
+      let conflict = false; // assume no conflict
+
+      while (startIndex < Math.abs(n)) { // while less than length of array
+        conflict = this.hasMajorDiagonalConflictAt(startIndex);
+        if (conflict) {
+          return conflict;
+        }
+        startIndex++;
+      }
+      return conflict;
     },
 
 
