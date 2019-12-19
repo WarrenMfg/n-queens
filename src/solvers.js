@@ -19,70 +19,78 @@ window.findNRooksSolution = function(n) {
   // o: matrix
   // c:
   // e:
-  // helpers:
-  // togglePiece: function(rowIndex, colIndex) {
-  //   this.get(rowIndex)[colIndex] = + !this.get(rowIndex)[colIndex];
-  //   this.trigger('change');
-  // }
-  // hasAnyRooksConflicts,
-
-  var solution = new Board({'n': n});
-  let totalPieces = 0; // on board
-  // let pos = [0, 0]; // row, col
   // from (0, 0) --> to (n - 1, n - 1)
+  var solution = new Board({'n': n});
   let notSafe = new Board({'n': n});
+  let totalPieces = 0; // on board
 
-  for (let i = 0; i < n; i++) { // row
-    for (let j = 0; j < n; j++) { // col
-      if (solution[i][j] === 0 && notSafe[i][j] === 0) { // not occupied, visited
-        solution.togglePiece(i, j);
-        totalPieces++;
+  // create memo???
+  let memo = {};
 
-        let hasConflict = solution.hasAnyRooksConflicts(i, j);
-        if (hasConflict) {
-          notSafe.togglePiece(i, j); // square is 1
-          solution.togglePiece(i, j); // remove from board
-          totalPieces--;
+  // return while loop as function or IIFE???
+  while (totalPieces < n) {
+    for (let r = 0; r < n; r++) { // row
+      for (let c = 0; c < n; c++) { // col
+        if (solution.get(r)[c] === 0 && notSafe.get(r)[c] === 0) { // if current square is open, and is safe
+          solution.togglePiece(r, c); // place piece on square
+          totalPieces++;
+
+          let hasConflict = solution.hasAnyRooksConflicts(r, c);
+          if (hasConflict) {
+            solution.togglePiece(r, c); // remove from solution board
+            notSafe.togglePiece(r, c); // mark square as not safe
+            totalPieces--;
+          } else { // but if no conflict
+            notSafe.togglePiece(r, c); // keep piece on board and mark as not safe
+          }
+        } else {
+          if (solution.get(r)[c] === 0) {
+            notSafe.togglePiece(r, c); // currently occupied by piece
+          }
         }
-      } else {
-        notSafe.togglePiece(i, j); // currently occupied by piece
       }
     }
   }
 
+  if (memo[n]) {
+    memo[n].push(solution);
+  } else {
+    memo[n] = [solution];
+  }
 
 
-
-  // while hasAnyRooksConflicts
-  // while (solution.hasAnyRooksConflicts(pos[0], pos[1])) {
-  //   // base case???
-
-  //   // if pos[1]++ < n
-  //   if (pos[1]++ < n) {
-  //     // pos[1]++
-  //     pos[1]++
-  //     // togglePiece(pos[0], pos[1]);
-  //     solution.togglePiece(pos[0], pos[1]);
-  //   } else if (pos[0]++ < n) { // else if pos[0]++ < n
-  //     // pos[1] = 0; // col: beginning of row
-  //     pos[1] = 0;
-  //     // pos[0]++ // new row
-  //     pos[0]++;
-  //     // togglePiece(pos[0], pos[1]);
-  //     solution.togglePiece(pos[0], pos[1]);
-  //   } else {
-  //      return solution;
-  //   }
-  // }
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution.rows()));
+  return solution.rows();
 };
+// while hasAnyRooksConflicts
+// while (solution.hasAnyRooksConflicts(pos[0], pos[1])) {
+//   // base case???
+
+//   // if pos[1]++ < n
+//   if (pos[1]++ < n) {
+//     // pos[1]++
+//     pos[1]++
+//     // togglePiece(pos[0], pos[1]);
+//     solution.togglePiece(pos[0], pos[1]);
+//   } else if (pos[0]++ < n) { // else if pos[0]++ < n
+//     // pos[1] = 0; // col: beginning of row
+//     pos[1] = 0;
+//     // pos[0]++ // new row
+//     pos[0]++;
+//     // togglePiece(pos[0], pos[1]);
+//     solution.togglePiece(pos[0], pos[1]);
+//   } else {
+//      return solution;
+//   }
+// }
+
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
-window.countNRooksSolutions = function(n) {
-  var solutionCount = 0; //fixme
+window.countNRooksSolutions = function(n) { // for n = 4, how many different placement options
+  var solutionCount = 0;
+  let memo = {};
 
-
+  // receive while loop function
 
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
