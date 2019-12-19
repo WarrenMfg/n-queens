@@ -204,15 +204,15 @@
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       let n = -this.get('n'); // get negative n (length of array)
-      let startIndex = n + 2; // opposite of length, but plus 1 to be opposite of last index, but plus 1 again (plus 2 total) bc we cannot have conflict in bottom left corner
+      let col = n + 2; // opposite of length, but plus 1 to be opposite of last index, but plus 1 again (plus 2 total) bc we cannot have conflict in bottom left corner
       let conflict = false; // assume no conflict, prove otherwise
 
-      while (startIndex < Math.abs(n)) { // while less than length of array
-        conflict = this.hasMajorDiagonalConflictAt(startIndex);
+      while (col < Math.abs(n)) { // while less than length of array
+        conflict = this.hasMajorDiagonalConflictAt(col);
         if (conflict) {
           return true;
         }
-        startIndex++;
+        col++;
       }
       return conflict;
     },
@@ -260,15 +260,15 @@
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       let n = this.get('n'); // get n (length of array)
-      let startIndex = 1; // top left corner + 1, bc top left corner cannot have minor conflict
+      let col = 1; // top left corner + 1, bc top left corner cannot have minor conflict
       let conflict = false; // assume no conflict, prove otherwise
 
-      while (startIndex < ((n - 1 ) * 2)) { // while less than twice the array.length, but exclude bottom right corner
-        conflict = this.hasMinorDiagonalConflictAt(startIndex);
+      while (col < ((n - 1 ) * 2)) { // while less than twice the array.length, but exclude bottom right corner
+        conflict = this.hasMinorDiagonalConflictAt(col);
         if (conflict) {
           return true;
         }
-        startIndex++;
+        col++;
       }
       return conflict;
     }
