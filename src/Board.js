@@ -92,8 +92,6 @@
       //   }
       // }
       // return false;
-
-
       // console.log('rowIndex', rowIndex);
       var count = 0;
       for (var i = 0; i < rowIndex.length; i++) {
@@ -125,20 +123,17 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      let board = this.get('n');
-      // let row = this.rows
+      let board = this.rows();
 
       var count = 0;
 
       // n = 4
-      console.log("get('n')", board); // array of columns???
+      // console.log('colIndex', colIndex);
       for (var i = 0; i < board.length; i++) {
         let row = board[i];
-        for (let j = 0; j < row.length; j++) {
-          if (row[colIndex] > 0) {
-            count++;
-            // consider additional if statement to short circuit the for loop
-          }
+        if (row[colIndex] > 0) {
+          count++;
+          // consider additional if statement to short circuit the for loop
         }
       }
 
@@ -172,12 +167,42 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+      let col = majorDiagonalColumnIndexAtFirstRow; // could be negative???
+      let i = 0;
+      let rows = this.rows();
+      let row = rows[i];
 
-      return false; // fixme
+      let iterator = function(row, col) {
+
+        if (row[col] === undefined && col < rows.length) { // edge case for negative numbers
+          // console.log('undefined edge case')
+          col++;
+          i++;
+          iterator(row, col);
+        }
+
+        if (col < rows.length) { // if col > rows.length, break out of recursion
+          if (row[col] > 0) { // individual chessboard square
+            return true; // conflict!!!
+          }
+
+        } else {
+          return false;
+        }
+
+        col++; // next column
+        i++; // next row
+        iterator(row, col);
+      };
+
+      iterator(row, col);
+
+      // return false; // fixme
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      console.log(this);
       return false; // fixme
     },
 
