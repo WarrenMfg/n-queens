@@ -79,12 +79,43 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      // let row = window.
+      // let pieceCount = 0;
+      // let row = this.get(rowIndex); // this is an array
+      // console.log(row.length);
+      // for (let i = 0; i < row.length; i++) {
+      //   if (row[i] > 0) {
+      //     pieceCount++;
+      //     if (pieceCount > 1) {
+      //       return true;
+      //     }
+      //   }
+      // }
+      // return false;
+
+
+      // console.log('rowIndex', rowIndex);
+      var count = 0;
+      for (var i = 0; i < rowIndex.length; i++) {
+        if (rowIndex[i]) {
+          count++;
+          // consider additional if statement to short circuit the for loop
+        }
+      }
+
+      return (count > 1);
     },
 
-    // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+    // test if any rows on this board contain conflicts
+      let rows = this.rows();
+
+      for (let i = 0; i < rows.length; i++) {
+        if (this.hasRowConflictAt(rows[i])) {
+          return true;
+        }
+      }
+      return false; // fixme --> fixed?
     },
 
 
@@ -94,21 +125,54 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      let board = this.get('n');
+      // let row = this.rows
+
+      var count = 0;
+
+      // n = 4
+      console.log("get('n')", board); // array of columns???
+      for (var i = 0; i < board.length; i++) {
+        let row = board[i];
+        for (let j = 0; j < row.length; j++) {
+          if (row[colIndex] > 0) {
+            count++;
+            // consider additional if statement to short circuit the for loop
+          }
+        }
+      }
+
+      return (count > 1);
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+
+      var board = this.rows();
+      for (var i = 0; i < board.length; i++) { // board length === row length
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
+
+      // can we use this.get('n') ???
+      // for (let i = 0; i < this.length; i++) {
+      //   if (this.hasColConflictAt(i)) {
+      //     return true;
+      //   }
+      // }
+      // return false; // fixme --> fixed?
     },
 
 
 
-    // Major Diagonals - go from top-left to bottom-right
+    // Major Diagonals - go from top-left to bottom-right - BACK SLASH
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+
       return false; // fixme
     },
 
@@ -119,7 +183,7 @@
 
 
 
-    // Minor Diagonals - go from top-right to bottom-left
+    // Minor Diagonals - go from top-right to bottom-left - FORWARD SLASH
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
