@@ -25,7 +25,7 @@ window.findNRooksSolution = function(n) {
   let totalPieces = 0; // on board
 
   // create memo???
-  let memo = {};
+  // let memo = {};
 
   // return while loop as function or IIFE???
   while (totalPieces < n) {
@@ -52,11 +52,11 @@ window.findNRooksSolution = function(n) {
     }
   }
 
-  if (memo[n]) {
-    memo[n].push(solution);
-  } else {
-    memo[n] = [solution];
-  }
+  // if (memo[n]) {
+  //   memo[n].push(solution);
+  // } else {
+  //   memo[n] = [solution];
+  // }
 
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution.rows()));
@@ -87,6 +87,34 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) { // for n = 4, how many different placement options
+
+  // referred to solution video
+  let solutionCount = 0;
+  let board = new Board({n: n});
+
+  let recurse = function(row) {
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
+
+    for (let i = 0; i < n; i++) {
+      board.togglePiece(row, i);
+
+      if (!board.hasAnyRooksConflicts()) {
+        recurse(row + 1);
+      }
+
+      board.togglePiece(row, i);
+    }
+  };
+
+  recurse(0);
+  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  return solutionCount;
+
+  // Our way-too-complicated-approach is below
+
   // var solutionCount = 0;
   // var solution = new Board({'n': n});
   // let notSafe = new Board({'n': n});
@@ -130,47 +158,27 @@ window.countNRooksSolutions = function(n) { // for n = 4, how many different pla
   //   }
   // }
 
+  // initial invocation
+  // makeBoard(n);
 
-  // for (let i = 0; i < solutionCount.length; i++) {
-  //   if (JSON.stringify(solutionCount[i]) === JSON.stringify(solution)) {
-  //     // create new solution board
-  //     solution = new Board({'n': n});
-  //     // create new notSafe board
-  //     notSafe = new Board({'n': n});
-  //     // update startSquare
-  //     startSquare++;
-  //     // initialize totalPieces to 0
-  //     totalPieces = 0;
-  //     // break;
-  //     break;
+  // if (startSquare < n) {
+  //   // count solution
+  //   solutionCount++;
+  //   // create new solution board
+  //   solution = new Board({'n': n});
+  //   // create new notSafe board
+  //   notSafe = new Board({'n': n});
+  //   // update startSquare
+  //   startSquare++;
+  //   // initialize totalPieces to 0
+  //   totalPieces = 0;
+  //   // reset set_c_toStartSquare
+  //   set_c_toStartSquare = true;
+  //   // make another board
+  //   if (startSquare < n) {
+  //     makeBoard(n);
   //   }
   // }
-
-  // initial invocation
-  makeBoard(n);
-
-  if (startSquare < n) {
-    // count solution
-    solutionCount++;
-    // create new solution board
-    solution = new Board({'n': n});
-    // create new notSafe board
-    notSafe = new Board({'n': n});
-    // update startSquare
-    startSquare++;
-    // initialize totalPieces to 0
-    totalPieces = 0;
-    // reset set_c_toStartSquare
-    set_c_toStartSquare = true;
-    // make another board
-    if (startSquare < n) {
-      makeBoard(n);
-    }
-  }
-
-
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
