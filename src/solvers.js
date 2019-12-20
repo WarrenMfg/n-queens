@@ -87,10 +87,86 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) { // for n = 4, how many different placement options
-  var solutionCount = 0;
-  let memo = {};
+  // var solutionCount = 0;
+  // var solution = new Board({'n': n});
+  // let notSafe = new Board({'n': n});
+  // let totalPieces = 0; // on board
+  // let startSquare = 0;
+  // let set_c_toStartSquare = true;
+  // // start a new board with the first piece starting one greater than the previous
 
-  // receive while loop function
+  // let makeBoard = function(n) {
+  //   // make board
+  //   while (totalPieces < n) {
+
+  //     for (let r = 0; r < n; r++) { // row
+
+  //       for (let c = 0; c < n; c++) { // col
+  //         // on first row only, reinitialize col start square
+  //         if (r === 0 && set_c_toStartSquare) {
+  //           set_c_toStartSquare = false;
+  //           c = startSquare;
+  //         }
+
+  //         if (solution.get(r)[c] === 0 && notSafe.get(r)[c] === 0) { // if current square is open, and is safe
+  //           solution.togglePiece(r, c); // place piece on square
+  //           totalPieces++;
+
+  //           let hasConflict = solution.hasAnyRooksConflicts(r, c);
+  //           if (hasConflict) {
+  //             solution.togglePiece(r, c); // remove from solution board
+  //             notSafe.togglePiece(r, c); // mark square as not safe
+  //             totalPieces--;
+  //           } else { // but if no conflict
+  //             notSafe.togglePiece(r, c); // keep piece on board and mark as not safe
+  //           }
+  //         } // else {
+  //           // if (solution.get(r)[c] !== 0) {
+  //             // notSafe.togglePiece(r, c); // currently occupied by piece
+  //           // }
+  //         // }
+  //       }
+  //     }
+  //   }
+  // }
+
+
+  // for (let i = 0; i < solutionCount.length; i++) {
+  //   if (JSON.stringify(solutionCount[i]) === JSON.stringify(solution)) {
+  //     // create new solution board
+  //     solution = new Board({'n': n});
+  //     // create new notSafe board
+  //     notSafe = new Board({'n': n});
+  //     // update startSquare
+  //     startSquare++;
+  //     // initialize totalPieces to 0
+  //     totalPieces = 0;
+  //     // break;
+  //     break;
+  //   }
+  // }
+
+  // initial invocation
+  makeBoard(n);
+
+  if (startSquare < n) {
+    // count solution
+    solutionCount++;
+    // create new solution board
+    solution = new Board({'n': n});
+    // create new notSafe board
+    notSafe = new Board({'n': n});
+    // update startSquare
+    startSquare++;
+    // initialize totalPieces to 0
+    totalPieces = 0;
+    // reset set_c_toStartSquare
+    set_c_toStartSquare = true;
+    // make another board
+    if (startSquare < n) {
+      makeBoard(n);
+    }
+  }
 
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
